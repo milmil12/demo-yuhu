@@ -153,7 +153,7 @@ y_select.on_change('value',callback)
     
 # Create layout and add to current document
 layout = row(widgetbox(negara_select, x_select, y_select), plot)
-curdoc().add_root(layout)
+#curdoc().add_root(layout)
 
 # My word count data
 day_num = ['Terkonfirmasi', 'Kasus Kematian', 'Sembuh', 'Aktif']
@@ -177,6 +177,9 @@ fig.vbar(x=day_num, bottom=0, top=daily_words,
 # Put the legend in the upper left corner
 fig.legend.location = 'top_left'
 
-# Let's check it out
-show(fig)
-
+east_panel = Panel(child=layout, title='Eastern Conference')
+west_panel = Panel(child=fig, title='Western Conference')
+tabs = Tabs(tabs=[west_panel, east_panel])
+curdoc().add_root(tabs)
+# Show the tabbed layout
+#show(tabs)
