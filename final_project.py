@@ -84,21 +84,23 @@ source = ColumnDataSource(data={
 # In[10]:
 
 
+output_notebook()
+
 # Create the figure: plot
 plot = figure(title='1970', x_axis_label='Terkonfirmasi (children per woman)', y_axis_label='Kasus_Kematian Expectancy (years)',
-           plot_height=400, plot_width=700, tools=[HoverTool(tooltips='@Negara')])
+           plot_height=400, plot_width=700, tools=[HoverTool(tooltips='@Benua')])
 
 # Add a circle glyph to the figure p
 plot.circle(x='x', y='y', source=source, fill_alpha=0.8,
-           color=dict(field='Benua', transform=color_mapper), legend='Benua')
+           color=dict(field='Benua', transform=mapper), legend='Benua')
 
 # Set the legend and axis attributes
 plot.legend.location = 'top_left'
 
 # Define the callback function: update_plot
-def update_plot(attr, old, new):
+def callback(attr, old, new):
     # set the `negara` name to `slider.value` and `source.data = new_data`
-    negara = slider.value
+    negara = negara_select.value
     x = x_select.value
     y = y_select.value
     # Label axes of plot
@@ -120,7 +122,15 @@ def update_plot(attr, old, new):
 # Make a slider object: slider
 str_list = data.index.tolist()
 slider = Slider(start=0, end=len(str_list)-1, value=0, step=1, title="Negara")
-slider.on_change('value',update_plot)
+slider.on_change('value',callback)
+
+negara_select = Select(
+    options=str_list,
+    value='Indonesi',
+    title='Negara'
+)
+
+negara_select.on_change('value', callback)
 
 # Make dropdown menu for x and y axis
 # Create a dropdown Select widget for the x data: x_select
@@ -130,7 +140,7 @@ x_select = Select(
     title='x-axis data'
 )
 # Attach the update_plot callback to the 'value' property of x_select
-x_select.on_change('value', update_plot)
+x_select.on_change('value', callback)
 
 # Create a dropdown Select widget for the y data: y_select
 y_select = Select(
@@ -139,21 +149,34 @@ y_select = Select(
     title='y-axis data'
 )
 # Attach the update_plot callback to the 'value' property of y_select
-y_select.on_change('value', update_plot)
+y_select.on_change('value',callback)
     
 # Create layout and add to current document
-layout = row(widgetbox(slider, x_select, y_select), plot)
+layout = row(widgetbox(negara_select, x_select, y_select), plot)
 curdoc().add_root(layout)
 
+# My word count data
+day_num = ['Terkonfirmasi', 'Kasus Kematian', 'Sembuh', 'Aktif']
+daily_words = [data.loc['Indonesia'].Terkonfirmasi, data.loc['Indonesia'].Kasus_Kematian, data.loc['Indonesia'].Sembuh, data.loc['Indonesia'].Aktif]
 
-# In[ ]:
+# Output the visualization directly in the notebook
+output_notebook()
 
+# Create a figure with a datetime type x-axis
+fig = figure(title='My Tutorial Progress',
+             x_range=day_num,
+             plot_height=400, plot_width=700,
+             x_axis_label='Day Number', y_axis_label='Words Written',
+             x_minor_ticks=2, y_range=(0, 200000))
 
+# The daily words will be represented as vertical bars (columns)
+fig.vbar(x=day_num, bottom=0, top=daily_words, 
+         color='blue', width=0.75, 
+         legend_label='Covid19 Indonesia')
 
+# Put the legend in the upper left corner
+fig.legend.location = 'top_left'
 
-
-# In[ ]:
-
-
-
+# Let's check it out
+show(fig)
 
