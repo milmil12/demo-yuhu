@@ -152,33 +152,4 @@ y_select.on_change('value',callback)
     
 # Create layout and add to current document
 layout = row(widgetbox(negara_select, x_select, y_select), plot)
-#curdoc().add_root(layout)
-
-# My word count data
-day_num = ['Terkonfirmasi', 'Kasus Kematian', 'Sembuh', 'Aktif']
-daily_words = [data.loc['Indonesia'].Terkonfirmasi, data.loc['Indonesia'].Kasus_Kematian, data.loc['Indonesia'].Sembuh, data.loc['Indonesia'].Aktif]
-
-# Output the visualization directly in the notebook
-output_notebook()
-
-# Create a figure with a datetime type x-axis
-fig = figure(title='My Tutorial Progress',
-             x_range=day_num,
-             plot_height=400, plot_width=700,
-             x_axis_label='Day Number', y_axis_label='Words Written',
-             x_minor_ticks=2, y_range=(0, 200000))
-
-# The daily words will be represented as vertical bars (columns)
-fig.vbar(x=day_num, bottom=0, top=daily_words, 
-         color='blue', width=0.75, 
-         legend_label='Covid19 Indonesia')
-
-# Put the legend in the upper left corner
-fig.legend.location = 'top_left'
-
-east_panel = Panel(child=layout, title='Eastern Conference')
-west_panel = Panel(child=fig, title='Western Conference')
-tabs = Tabs(tabs=[west_panel, east_panel])
-curdoc().add_root(tabs)
-# Show the tabbed layout
-#show(tabs)
+curdoc().add_root(layout)
